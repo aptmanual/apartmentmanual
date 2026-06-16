@@ -478,7 +478,7 @@ init();
       const date = pubDate ? new Date(pubDate).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}) : '';
       const grad = GRADS[i % GRADS.length];
       const imgHtml = thumb
-        ? `<img src="${thumb}" alt="${title}" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none';this.parentElement.style.background='${grad}'">`
+        ? `<img src="${thumb}" alt="${title}" referrerpolicy="no-referrer" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none';this.parentElement.style.background='${grad}'">`
         : '';
       return `
         <article class="case" style="cursor:pointer" onclick="window.open('${link}','_blank')">
