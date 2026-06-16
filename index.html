@@ -35,7 +35,7 @@
   "description": "아파트 집수리 증상별 원인·해결 방법·실제 시공사례 안내",
   "publisher": {
     "@type": "LocalBusiness",
-    "name": "정사장 집수리",
+    "name": "아파트 사용설명서",
     "areaServed": "송파구, 잠실동",
     "telephone": "010-8955-9640"
   },
@@ -95,7 +95,7 @@ select.ready{border-color:var(--green);box-shadow:0 0 0 3px rgba(82,122,67,.15);
 .sticky{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(248,245,238,.95);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:10px 14px calc(10px + var(--safe-bottom))}.sticky-in{width:min(100%,520px);margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:9px}.sticky button{height:46px;border-radius:14px;font-size:16px;font-weight:950}.sticky .ghost{background:#fff;border:1px solid var(--line);color:var(--choco)}.sticky .solid{background:var(--green);color:#fff}
 
 /* modal */
-.overlay{position:fixed;inset:0;z-index:80;background:rgba(45,40,33,.48);display:none;align-items:flex-end}.overlay.open{display:flex}.sheet{width:100%;max-width:520px;margin:0 auto;background:#fff;border-radius:22px 22px 0 0;padding:18px 18px calc(18px + var(--safe-bottom));box-shadow:0 -12px 30px rgba(0,0,0,.16)}.sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px}.sheet h2{font-size:19px;font-weight:950}.sheet p{font-size:17px;color:var(--muted);margin-top:3px}.x{width:34px;height:34px;border-radius:50%;background:var(--beige);font-size:20px;color:var(--muted)}.sheet .field{margin-top:12px}.sheet label{display:block;font-size:16px;font-weight:950;margin-bottom:6px}.sheet input{width:100%;height:45px;border:1.5px solid var(--sand);border-radius:13px;padding:0 13px}.photo-box{border:1.5px dashed var(--sand);border-radius:15px;padding:12px;background:#FAF8F2}.photo-box input{height:auto;border:0;padding:0;border-radius:0}.send{width:100%;height:50px;margin-top:14px;border-radius:14px;background:var(--choco);color:#fff;font-weight:950}.send:disabled{opacity:.45}.note{font-size:17px!important;color:var(--muted)!important;text-align:center;margin-top:8px!important}
+.overlay{position:fixed;inset:0;z-index:80;background:rgba(45,40,33,.48);display:none;align-items:flex-end}.overlay.open{display:flex}.sheet{width:100%;max-width:520px;margin:0 auto;background:#fff;border-radius:22px 22px 0 0;padding:18px 18px calc(18px + var(--safe-bottom));box-shadow:0 -12px 30px rgba(0,0,0,.16);max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch}.sheet-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px}.sheet h2{font-size:19px;font-weight:950}.sheet p{font-size:17px;color:var(--muted);margin-top:3px}.x{width:34px;height:34px;border-radius:50%;background:var(--beige);font-size:20px;color:var(--muted);flex:none}.sheet .field{margin-top:12px}.sheet label{display:block;font-size:16px;font-weight:950;margin-bottom:6px}.sheet input{width:100%;height:45px;border:1.5px solid var(--sand);border-radius:13px;padding:0 13px}.photo-box{border:1.5px dashed var(--sand);border-radius:15px;padding:12px;background:#FAF8F2}.photo-box input{height:auto;border:0;padding:0;border-radius:0}.send{width:100%;height:50px;margin-top:14px;border-radius:14px;background:var(--choco);color:#fff;font-weight:950}.send:disabled{opacity:.45}.note{font-size:17px!important;color:var(--muted)!important;text-align:center;margin-top:8px!important}
 
 /* tablet */
 @media(min-width:720px){
@@ -373,12 +373,13 @@ function addPhotos(e){[...e.target.files].slice(0,8-CS.photos.length).forEach(f=
 function rmPhoto(i){CS.photos.splice(i,1);renderConsult();}
 function aptName(){return CS.apt==='직접 입력'?(CS.aptCustom||''):CS.apt;}
 function renderConsult(){
+  const isMobile = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
   const ph=CS.photos.map((p,i)=>`<div class="ph-thumb"><img src="${p}"><button class="rm" onclick="rmPhoto(${i})">×</button></div>`).join('');
   const add=CS.photos.length<8?`<label class="ph-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="12.5" r="3"/></svg>사진 추가<input type="file" accept="image/*" multiple style="display:none" onchange="addPhotos(event)"></label>`:'';
   const aptOpts=APTS.map(a=>`<option value="${a}"${CS.apt===a?' selected':''}>${a}</option>`).join('');
   const customStyle=CS.apt==='직접 입력'?'display:block':'display:none';
   $('consultSheet').innerHTML=`
-    <div class="sheet-head"><div><h2>💬 문자로 상담 신청</h2><p>현장 사진이 없으면 전송할 수 없습니다.</p></div><button class="x" onclick="closeConsult()">×</button></div>
+    <div class="sheet-head"><div><h2>💬 ${isMobile?'문자로 상담 신청':'카카오톡 상담 신청'}</h2><p>${isMobile?'현장 사진이 없으면 전송할 수 없습니다.':'아래 정보를 확인하고 카카오톡으로 보내주세요.'}</p></div><button class="x" onclick="closeConsult()">×</button></div>
     <div class="field"><label>지역</label><input id="smsRegion" value="${CS.region}" oninput="CS.region=this.value;renderConsult()"></div>
     <div class="field"><label>아파트명 <b style="color:#C0492F">*</b></label>
       <select class="apt-sel" id="smsApt" onchange="CS.apt=this.value;renderConsult()"><option value="">아파트를 선택하세요</option>${aptOpts}</select>
@@ -390,14 +391,16 @@ function renderConsult(){
       <p class="hint">사진이 있으면 <b>상담이 훨씬 정확</b>해집니다. 1장 이상 첨부해야 전송할 수 있어요.</p>
     </div>
     <div style="background:#F4F1EA;border-radius:13px;padding:12px;margin-top:4px">
-      <div style="font:700 13px/1 sans-serif;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>보낼 문자 미리보기</div>
+      <div style="font:700 13px/1 sans-serif;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>보낼 메시지 미리보기</div>
       <div style="background:#fff;border-radius:12px 12px 12px 3px;padding:11px 13px;font-size:16px;line-height:1.6;box-shadow:0 1px 2px rgba(45,40,33,.06)">
         <b style="color:var(--green-deep)">[아파트 사용설명서 상담]</b><br>지역: ${CS.region}<br>아파트: ${aptName()||'(선택해 주세요)'}<br>연락처: ${CS.phone||'(입력해 주세요)'}<br>※ 현장 사진 ${CS.photos.length}장 첨부.
       </div>
     </div>
-    <button class="send-btn" ${CS.photos.length&&CS.phone?'':'disabled'} onclick="sendSMS()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>${CS.photos.length&&CS.phone?'문자로 상담 보내기':(!CS.phone?'연락처를 먼저 입력하세요':'현장 사진을 먼저 첨부하세요')}</button>
-    <button class="send-btn" style="margin-top:8px;background:#FEE500;color:#3C1E1E;border:0" onclick="openKakao()"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.7 1.613 5.08 4.077 6.573L5 21l4.493-2.41A11.3 11.3 0 0 0 12 18.6c5.523 0 10-3.477 10-7.8S17.523 3 12 3Z"/></svg>카카오톡으로 상담하기</button>
-    <p class="sms-note">010-8955-9640 · 정사장 집수리</p>`;
+    ${isMobile
+      ? `<button class="send-btn" ${CS.photos.length&&CS.phone?'':'disabled'} onclick="sendSMS()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>${CS.photos.length&&CS.phone?'문자로 상담 보내기':(!CS.phone?'연락처를 먼저 입력하세요':'현장 사진을 먼저 첨부하세요')}</button>`
+      : `<button class="send-btn" style="background:#FEE500;color:#3C1E1E;border:0" onclick="openKakao()"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.7 1.613 5.08 4.077 6.573L5 21l4.493-2.41A11.3 11.3 0 0 0 12 18.6c5.523 0 10-3.477 10-7.8S17.523 3 12 3Z"/></svg>카카오톡으로 상담하기</button>
+`}
+    <p class="sms-note">010-8955-9640</p>`;
 }
 function sendSMS(){
   if(!CS.phone.trim()){alert('연락처를 입력해 주세요.');return;}
@@ -478,7 +481,7 @@ init();
       const date = pubDate ? new Date(pubDate).toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'}) : '';
       const grad = GRADS[i % GRADS.length];
       const imgHtml = thumb
-        ? `<img src="${thumb}" alt="${title}" referrerpolicy="no-referrer" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none';this.parentElement.style.background='${grad}'">`
+        ? `<img src="${thumb}" alt="${title}" referrerpolicy="no-referrer" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none';this.parentElement.style.background='${grad}'">`
         : '';
       return `
         <article class="case" style="cursor:pointer" onclick="window.open('${link}','_blank')">
