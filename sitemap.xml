@@ -1,80 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-  <!-- 홈 -->
-  <url>
-    <loc>https://apartmentmanual.kr/</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-
-  <!-- 증상 상세 — 주방 -->
-  <url>
-    <loc>https://apartmentmanual.kr/guide.html?s=s01</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://apartmentmanual.kr/guide.html?s=s06</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- 증상 상세 — 욕실 -->
-  <url>
-    <loc>https://apartmentmanual.kr/guide.html?s=s02</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://apartmentmanual.kr/guide.html?s=s03</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://apartmentmanual.kr/guide.html?s=s04</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://apartmentmanual.kr/guide.html?s=s05</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://apartmentmanual.kr/guide.html?s=s09</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- 증상 상세 — 거실/방 -->
-  <url>
-    <loc>https://apartmentmanual.kr/guide.html?s=s07</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://apartmentmanual.kr/guide.html?s=s08</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- 증상 상세 — 현관 -->
-  <url>
-    <loc>https://apartmentmanual.kr/guide.html?s=s10</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
+  <url><loc>https://apartmentmanual.kr/</loc><lastmod>2026-06-16</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s01</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s02</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s03</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s04</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s05</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s06</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s07</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s08</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s09</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s10</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s11</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s12</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s13</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s14</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s15</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s16</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s17</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s18</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s19</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://apartmentmanual.kr/guide.html?s=s20</loc><lastmod>2026-06-16</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>
