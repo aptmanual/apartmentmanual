@@ -224,11 +224,9 @@ select.ready{border-color:var(--green);box-shadow:0 0 0 3px rgba(82,122,67,.15);
 
     <div class="sections">
       <section class="section" id="cases">
-        <div class="sec-head"><h2>실제 시공사례</h2><a href="#">블로그 ›</a></div>
-        <div class="case-row">
-          <article class="case" style="cursor:pointer" onclick="location.href='guide.html?s=s02'"><div class="case-img"><span class="case-tag">욕실</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="12.5" r="3"/></svg></div><div class="case-bd"><h3>변기 물이 계속 흘러요</h3><p>부속 교체로 해결한 실제 사례</p></div></article>
-          <article class="case" style="cursor:pointer" onclick="location.href='guide.html?s=s01'"><div class="case-img"><span class="case-tag">주방</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="12.5" r="3"/></svg></div><div class="case-bd"><h3>싱크대 수전 누수</h3><p>수전 교체 전후 블로그 연동</p></div></article>
-          <article class="case" style="cursor:pointer" onclick="location.href='guide.html?s=s05'"><div class="case-img"><span class="case-tag">욕실</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="12.5" r="3"/></svg></div><div class="case-bd"><h3>환풍기 소음</h3><p>팬 모터 교체 후 소음 해결</p></div></article>
+        <div class="sec-head"><h2>실제 시공사례</h2><a href="https://blog.naver.com/mac6765" target="_blank" rel="noopener">블로그 ›</a></div>
+        <div id="naver-case-list" class="case-row">
+          <div class="case"><div class="case-img" style="display:grid;place-items:center;color:var(--soft);font-size:15px">불러오는 중...</div></div>
         </div>
       </section>
 
@@ -413,6 +411,82 @@ function openKakao(){
   window.open('http://pf.kakao.com/_txlVqG','_blank');
 }
 init();
+</script>
+<!-- 네이버 블로그 RSS 자동 연동 -->
+<script>
+(async function(){
+  const container = document.getElementById('naver-case-list');
+  if(!container) return;
+
+  // 공간 키워드 → 태그 매핑
+  const TAGS = [
+    {keywords:['욕실','변기','샤워','세면','환풍','폽업','수전 교체'], tag:'욕실'},
+    {keywords:['싱크대','주방','렌지','후드','배수통','하수구'], tag:'주방'},
+    {keywords:['거실','방등','조명','LED','스위치','콘센트','손잡이','방문'], tag:'거실/방'},
+    {keywords:['현관','도어락','센서등','도어클로저'], tag:'현관'},
+    {keywords:['베란다','건조대','창문','샷시'], tag:'베란다'},
+  ];
+  function getTag(title){
+    for(const {keywords, tag} of TAGS){
+      if(keywords.some(k => title.includes(k))) return tag;
+    }
+    return '집수리';
+  }
+
+  // 그라디언트 (기존 case-img 색상 시스템 활용)
+  const GRADS = [
+    'linear-gradient(135deg,#527A43,#315927)',
+    'linear-gradient(135deg,#8A6E45,#5B4632)',
+    'linear-gradient(135deg,#6E8A60,#46603A)',
+    'linear-gradient(135deg,#5A7A8A,#2D5566)',
+  ];
+
+  try {
+    const res = await fetch('/api/naver-rss');
+    if(!res.ok) throw new Error('API 오류: '+res.status);
+    const items = await res.json();
+    const posts = Array.isArray(items) ? items : (items.items || []);
+    if(!posts.length) throw new Error('글 없음');
+
+    container.innerHTML = posts.slice(0,3).map((p, i) => {
+      const tag = getTag(p.title || '');
+      const thumb = p.thumbnail || p.enclosure || '';
+      const imgHtml = thumb
+        ? `<img src="${thumb}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;display:block">`
+        : '';
+      const grad = GRADS[i % GRADS.length];
+      return `
+        <article class="case" style="cursor:pointer" onclick="window.open('${p.link}','_blank')">
+          <div class="case-img" style="${thumb ? '' : 'background:'+grad}">
+            <span class="case-tag">${tag}</span>
+            ${imgHtml}
+          </div>
+          <div class="case-bd">
+            <h3>${p.title}</h3>
+            <p>${(p.pubDate||'').substring(0,10)}</p>
+          </div>
+        </article>`;
+    }).join('');
+  } catch(e) {
+    // RSS 실패 시 기본 카드 3개로 폴백
+    container.innerHTML = `
+      <article class="case" style="cursor:pointer" onclick="location.href='guide.html?s=s02'">
+        <div class="case-img" style="background:linear-gradient(135deg,#527A43,#315927)">
+          <span class="case-tag">욕실</span></div>
+        <div class="case-bd"><h3>변기 물이 계속 흘러요</h3><p>물통부속 교체로 해결</p></div>
+      </article>
+      <article class="case" style="cursor:pointer" onclick="location.href='guide.html?s=s01'">
+        <div class="case-img" style="background:linear-gradient(135deg,#8A6E45,#5B4632)">
+          <span class="case-tag">주방</span></div>
+        <div class="case-bd"><h3>싱크대 수전 누수</h3><p>수전 교체 전후 사례</p></div>
+      </article>
+      <article class="case" style="cursor:pointer" onclick="location.href='guide.html?s=s05'">
+        <div class="case-img" style="background:linear-gradient(135deg,#6E8A60,#46603A)">
+          <span class="case-tag">욕실</span></div>
+        <div class="case-bd"><h3>환풍기 소음</h3><p>팬 모터 교체 후 해결</p></div>
+      </article>`;
+  }
+})();
 </script>
 </body>
 </html>
