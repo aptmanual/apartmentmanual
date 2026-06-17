@@ -380,12 +380,12 @@ function renderConsult(){
   const customStyle=CS.apt==='직접 입력'?'display:block':'display:none';
   $('consultSheet').innerHTML=`
     <div class="sheet-head"><div><h2>💬 ${isMobile?'문자로 상담 신청':'카카오톡 상담 신청'}</h2><p>${isMobile?'현장 사진이 없으면 전송할 수 없습니다.':'아래 정보를 확인하고 카카오톡으로 보내주세요.'}</p></div><button class="x" onclick="closeConsult()">×</button></div>
-    <div class="field"><label>지역</label><input id="smsRegion" value="${CS.region}" oninput="CS.region=this.value;renderConsult()"></div>
+    <div class="field"><label>지역</label><input id="smsRegion" value="${CS.region}" oninput="CS.region=this.value;cSync()"></div>
     <div class="field"><label>아파트명 <b style="color:#C0492F">*</b></label>
       <select class="apt-sel" id="smsApt" onchange="CS.apt=this.value;renderConsult()"><option value="">아파트를 선택하세요</option>${aptOpts}</select>
-      <input class="apt-custom" id="smsAptCustom" style="${customStyle}" placeholder="아파트·건물명을 입력하세요" value="${CS.aptCustom}" oninput="CS.aptCustom=this.value;renderConsult()">
+      <input class="apt-custom" id="smsAptCustom" style="${customStyle}" placeholder="아파트·건물명을 입력하세요" value="${CS.aptCustom}" oninput="CS.aptCustom=this.value;cSync()">
     </div>
-    <div class="field"><label>연락처 <b style="color:#C0492F">* 필수</b></label><input id="smsPhone" type="tel" placeholder="010-0000-0000" value="${CS.phone}" oninput="CS.phone=this.value;renderConsult()" style="width:100%;height:44px;border:1.5px solid #D8CCB8;border-radius:12px;padding:0 12px;font-size:16px"></div>
+    <div class="field"><label>연락처 <b style="color:#C0492F">* 필수</b></label><input id="smsPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="010-0000-0000" value="${CS.phone}" oninput="CS.phone=this.value;cSync()" style="width:100%;height:44px;border:1.5px solid #D8CCB8;border-radius:12px;padding:0 12px;font-size:16px"></div>
     <div class="field"><label>현장 사진 <b style="color:#C0492F">* 필수</b></label>
       <div class="photos-grid">${ph}${add}</div>
       <p class="hint">사진이 있으면 <b>상담이 훨씬 정확</b>해집니다. 1장 이상 첨부해야 전송할 수 있어요.</p>
@@ -393,14 +393,26 @@ function renderConsult(){
     <div style="background:#F4F1EA;border-radius:13px;padding:12px;margin-top:4px">
       <div style="font:700 13px/1 sans-serif;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>보낼 메시지 미리보기</div>
       <div style="background:#fff;border-radius:12px 12px 12px 3px;padding:11px 13px;font-size:16px;line-height:1.6;box-shadow:0 1px 2px rgba(45,40,33,.06)">
-        <b style="color:var(--green-deep)">[아파트 사용설명서 상담]</b><br>지역: ${CS.region}<br>아파트: ${aptName()||'(선택해 주세요)'}<br>연락처: ${CS.phone||'(입력해 주세요)'}<br>※ 현장 사진 ${CS.photos.length}장 첨부.
+        <b style="color:var(--green-deep)">[아파트 사용설명서 상담]</b><br>지역: <span id="smsPvRegion">${CS.region}</span><br>아파트: <span id="smsPvApt">${aptName()||'(선택해 주세요)'}</span><br>연락처: <span id="smsPvPhone">${CS.phone.trim()||'(입력해 주세요)'}</span><br>※ 현장 사진 ${CS.photos.length}장 첨부.
       </div>
     </div>
     ${isMobile
-      ? `<button class="send-btn" ${CS.photos.length&&CS.phone?'':'disabled'} onclick="sendSMS()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>${CS.photos.length&&CS.phone?'문자로 상담 보내기':(!CS.phone?'연락처를 먼저 입력하세요':'현장 사진을 먼저 첨부하세요')}</button>`
+      ? `<button class="send-btn" id="smsSend" ${CS.photos.length&&CS.phone.trim()?'':'disabled'} onclick="sendSMS()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>${CS.photos.length&&CS.phone.trim()?'문자로 상담 보내기':(!CS.phone.trim()?'연락처를 먼저 입력하세요':'현장 사진을 먼저 첨부하세요')}</button>`
       : `<button class="send-btn" style="background:#FEE500;color:#3C1E1E;border:0" onclick="openKakao()"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.477 3 2 6.477 2 10.8c0 2.7 1.613 5.08 4.077 6.573L5 21l4.493-2.41A11.3 11.3 0 0 0 12 18.6c5.523 0 10-3.477 10-7.8S17.523 3 12 3Z"/></svg>카카오톡으로 상담하기</button>
 `}
     <p class="sms-note">010-8955-9640</p>`;
+}
+function cSync(){
+  var ok=CS.photos.length&&CS.phone.trim();
+  var btn=$('smsSend');
+  if(btn){
+    btn.disabled=!ok;
+    var icon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>';
+    btn.innerHTML=icon+(ok?'문자로 상담 보내기':(!CS.phone.trim()?'연락처를 먼저 입력하세요':'현장 사진을 먼저 첨부하세요'));
+  }
+  var pr=$('smsPvRegion');if(pr)pr.textContent=CS.region;
+  var pa=$('smsPvApt');if(pa)pa.textContent=aptName()||'(선택해 주세요)';
+  var pp=$('smsPvPhone');if(pp)pp.textContent=CS.phone.trim()||'(입력해 주세요)';
 }
 function sendSMS(){
   if(!CS.phone.trim()){alert('연락처를 입력해 주세요.');return;}
