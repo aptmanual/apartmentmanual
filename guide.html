@@ -352,6 +352,7 @@ const TAGMAP={
  s17:'전등스위치교체 전기콘센트교체', s18:'올스텐천정건조대',     s19:'샷시창문로드교체',    s20:'붙박이장경첩교체'
 };
 const BLOG_ID='mac6765';
+const BLOG_SIGNATURE='한빛철물마트잠실점아파트사용설명서'; /* 워커와 동일한 고유 태그 (검색조건 일치용) */
 const API_BLOG_SEARCH='/api/blog-search';
 
 const POSTS={
@@ -946,7 +947,9 @@ function fallbackCases(s){
 async function loadCases(s){
  const wrap=$('casesWrap'); if(!wrap)return;
  const tag=TAGMAP[s.id]||s.fix;
- const searchUrl='https://m.blog.naver.com/'+BLOG_ID+'?searchText='+encodeURIComponent(tag);
+ const terms=tag.split(/\s+/).filter(Boolean).map(function(t){return '"'+t+'"';}).join(' ');
+ const sQuery=(BLOG_SIGNATURE?'"'+BLOG_SIGNATURE+'" ':'')+terms;
+ const searchUrl='https://search.naver.com/search.naver?ssc=tab.blog.all&query='+encodeURIComponent(sQuery);
  const moreBtn='<button class="cases-more" onclick="openLv(\''+searchUrl+'\',\'네이버 블로그\')">블로그에서 더 많은 사례를 보세요 →</button>';
  try{
   const res=await fetch(API_BLOG_SEARCH+'?tag='+encodeURIComponent(tag)+'&n=3',{cache:'no-store'});
