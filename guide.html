@@ -752,7 +752,25 @@ function doLv(){if(lvUrl)window.open(lvUrl,'_blank');closeLv();}
 function leaveG(q){openLv('https://www.google.com/search?q='+encodeURIComponent(q),'구글');}
 
 /* consult */
-function openConsult(){renderConsult();$('ovConsult').classList.add('open');document.body.style.overflow='hidden';}
+function openConsult(){
+  const isMobile=/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+  if(!isMobile){
+    $('shConsult').innerHTML=`
+      <div class="sheet-hd"><div><h2>📱 스마트폰으로 상담하세요</h2><p class="sub">현장 사진 첨부가 필요해 모바일에서만 신청 가능합니다.</p></div><button class="x" onclick="closeConsult()">×</button></div>
+      <div style="padding:20px 0 8px;text-align:center">
+        <div style="font-size:52px;margin-bottom:12px">📷</div>
+        <p style="font-size:17px;font-weight:850;color:var(--ink);margin-bottom:6px">현장 사진이 있어야 정확한 상담이 가능합니다</p>
+        <p style="font-size:15px;color:var(--muted);line-height:1.6">스마트폰으로 현장을 촬영한 뒤<br>모바일에서 이 페이지를 열어 문자로 보내주세요.</p>
+        <div style="margin-top:20px;padding:16px;background:var(--green-soft);border-radius:14px">
+          <p style="font-size:14px;color:var(--muted);margin-bottom:6px">전화로 먼저 문의하셔도 됩니다</p>
+          <a href="tel:01089559640" style="font-size:22px;font-weight:950;color:var(--green-deep);text-decoration:none">010-8955-9640</a>
+        </div>
+      </div>`;
+    $('ovConsult').classList.add('open');document.body.style.overflow='hidden';
+    return;
+  }
+  renderConsult();$('ovConsult').classList.add('open');document.body.style.overflow='hidden';
+}
 function closeConsult(){$('ovConsult').classList.remove('open');document.body.style.overflow='';}
 function addPhotos(e){[...e.target.files].slice(0,8-CS.photos.length).forEach(f=>{const r=new FileReader();r.onload=()=>{CS.photos.push(r.result);renderConsult();};r.readAsDataURL(f);});}
 function rmPhoto(i){CS.photos.splice(i,1);renderConsult();}
