@@ -68,6 +68,8 @@ html{font-size:16px}
 .appbar{position:sticky;top:0;z-index:40;background:rgba(248,245,238,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .appbar .in{height:60px;display:flex;align-items:center;justify-content:space-between;gap:12px}.logo{display:flex;align-items:center;gap:9px;min-width:0}
 .logo-ico{width:34px;height:34px;border:2px solid var(--green-deep);border-radius:10px;display:grid;place-items:center;color:var(--green-deep);flex:none;background:#fff}.logo-ico svg{width:21px;height:21px}.logo-txt b{display:block;font-size:17px;line-height:1.05;letter-spacing:-.04em;color:var(--green-deep)}.logo-txt span{display:block;font-size:17px;color:var(--muted);white-space:nowrap}.nav{display:none}.top-btn{height:38px;padding:0 12px;border-radius:12px;background:var(--green);color:#fff;font-weight:850;font-size:16px;display:flex;align-items:center;gap:5px;flex:none;box-shadow:0 4px 12px rgba(49,89,39,.18)}.top-btn svg{width:15px;height:15px}
+@media(max-width:719px){.top-btn{height:30px;padding:0 9px;font-size:12px;border-radius:8px;gap:4px}.top-btn svg{width:13px;height:13px}.appbar .in{height:50px}.logo-txt b{font-size:15px}.logo-txt span{font-size:11px}}
+@media(max-width:719px){.top-btn{height:30px;padding:0 9px;font-size:12px;border-radius:8px;gap:4px}.top-btn svg{width:13px;height:13px}.appbar .in{height:50px}.logo-txt b{font-size:15px}.logo-txt span{font-size:11px}}
 
 /* hero */
 .hero{padding:20px 0 16px;background:linear-gradient(180deg,#FCFAF6 0%,var(--cream) 100%)}
@@ -136,10 +138,10 @@ select.ready{border-color:var(--green);box-shadow:0 0 0 3px rgba(82,122,67,.15);
   <div class="wrap in">
     <a class="logo" href="#top" aria-label="아파트 사용설명서 홈">
       <span class="logo-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></span>
-      <span class="logo-txt"><b>아파트 사용설명서</b><span>우리집을 오래오래 건강하게</span></span>
+      <span class="logo-txt"><b>아파트 사용설명서</b><span>by 한빛철물마트 잠실점</span></span>
     </a>
     <nav class="nav" aria-label="주요 메뉴"><a href="#guide">문제 해결 가이드</a><a href="#spaces">사용설명서</a><a href="#cases">시공사례</a><a href="#consult">고객센터</a></nav>
-    <button class="top-btn" onclick="openConsult()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg><span class="only-desktop">💬 문자 상담 / AS 신청</span><span class="only-mobile">문자상담</span></button>
+    <button class="top-btn" onclick="openAIModal()" style="background:var(--green-deep)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10c.7.7 1 1.5 1 2h6c0-.5.3-1.3 1-2a6 6 0 0 0-4-10Z"/></svg><span class="only-desktop">AI 집수리 상담</span><span class="only-mobile">AI 상담</span></button>
   </div>
 </header>
 
@@ -156,7 +158,7 @@ select.ready{border-color:var(--green);box-shadow:0 0 0 3px rgba(82,122,67,.15);
           <div class="trust-list">
             <div class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg><div><b>아파트 설비 위키</b><span>공간별 구조와 관리법</span></div></div>
             <div class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2-2 2.6-2.6Z"/></svg><div><b>문제 해결 가이드</b><span>증상별 원인/조치 안내</span></div></div>
-            <div class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg><div><b>문자 상담 연결</b><span>지역·아파트명·사진 필수</span></div></div>
+            <div class="trust"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10c.7.7 1 1.5 1 2h6c0-.5.3-1.3 1-2a6 6 0 0 0-4-10Z"/></svg><div><b>AI 집수리 상담</b><span>증상 입력 → 단계별 해결책</span></div></div>
           </div>
         </div>
 
@@ -232,10 +234,10 @@ select.ready{border-color:var(--green);box-shadow:0 0 0 3px rgba(82,122,67,.15);
 
       <section class="section" id="consult">
         <div class="consult">
-          <h2>무료 문자 상담</h2>
-          <p>정확한 상담을 위해 3가지를 꼭 보내주세요.</p>
-          <div class="reqs"><div class="req">📍<br>지역</div><div class="req">🏢<br>아파트명</div><div class="req">📷<br>현장사진</div></div>
-          <button onclick="openConsult()">상담 / AS 신청하기</button>
+          <h2>AI 집수리 상담</h2>
+          <p>증상을 입력하면 직접 해결 방법부터 전문가가 필요한 경우까지 단계별로 안내해 드려요.</p>
+          <div class="reqs"><div class="req">💧<br>누수·배수</div><div class="req">💡<br>조명·전기</div><div class="req">🔧<br>설비·부품</div></div>
+          <button onclick="openAIModal()">AI 집수리 상담 시작 →</button>
         </div>
       </section>
     </div>
@@ -247,13 +249,13 @@ select.ready{border-color:var(--green);box-shadow:0 0 0 3px rgba(82,122,67,.15);
         <div class="flow-item"><span>2</span><div>설비 선택<small>변기·수전·환풍기 등</small></div></div>
         <div class="flow-item"><span>3</span><div>증상 선택<small>물이 샘·소음·미작동 등</small></div></div>
         <div class="flow-item"><span>4</span><div>원인/조치 + 시공사례 확인<small>블로그 글로 실제 사례 연결</small></div></div>
-        <div class="flow-item"><span>5</span><div>문자 상담<small>지역·아파트명·현장사진 필수</small></div></div>
+        <div class="flow-item"><span>5</span><div>AI 상담<small>증상 입력으로 바로 해결책 확인</small></div></div>
       </div>
     </section>
   </div>
 </main>
 
-<div class="sticky"><div class="sticky-in"><button class="ghost" onclick="document.getElementById('guide').scrollIntoView({behavior:'smooth'})">문제 찾기</button><button class="solid" onclick="openConsult()">문자 상담</button></div></div>
+<div class="sticky"><div class="sticky-in"><button class="ghost" onclick="document.getElementById('guide').scrollIntoView({behavior:'smooth'})">문제 찾기</button><button class="solid" onclick="openAIModal()">AI 상담</button></div></div>
 
 <div class="overlay" id="consultOverlay" onclick="if(event.target===this)closeConsult()">
   <div class="sheet" id="consultSheet"></div>
@@ -305,7 +307,7 @@ function showResult(){
   location.href='guide.html?s='+id;
  } else {
   const box=$('resultBox');
-  box.innerHTML='<b>'+sp+' › '+fx+' › '+sy+'</b> 페이지를 준비 중입니다.<small>문자 상담으로 바로 연결하시거나, 비슷한 증상 페이지를 먼저 둘러보세요.</small><div style="display:flex;gap:8px;margin-top:10px"><button onclick="openConsult()" style="flex:1;height:40px;border-radius:10px;background:#5B4632;color:#fff;font-weight:900;font-size:17px;border:0;cursor:pointer">문자 상담</button><button onclick="location.href=\'guide.html\'" style="flex:1;height:40px;border-radius:10px;background:#fff;color:#5B4632;font-weight:900;font-size:17px;border:1.5px solid #D8CCB8;cursor:pointer">전체 증상 보기</button></div>';
+  box.innerHTML='<b>'+sp+' › '+fx+' › '+sy+'</b> 페이지를 준비 중입니다.<small>AI 상담으로 바로 해결책을 확인하시거나, 비슷한 증상 페이지를 먼저 둘러보세요.</small><div style="display:flex;gap:8px;margin-top:10px"><button onclick="openAIModal()" style="flex:1;height:40px;border-radius:10px;background:#315927;color:#fff;font-weight:900;font-size:17px;border:0;cursor:pointer">AI 집수리 상담</button><button onclick="location.href=\'guide.html\'" style="flex:1;height:40px;border-radius:10px;background:#fff;color:#5B4632;font-weight:900;font-size:17px;border:1.5px solid #D8CCB8;cursor:pointer">전체 증상 보기</button></div>';
   box.classList.add('open');
  }
 }
@@ -556,7 +558,236 @@ init();
   }
 })();
 </script>
-  <link rel="stylesheet" href="chatbot.css">
-  <script src="chatbot.js"></script>
+
+<!-- ═══════════════════════════════════════════════════════════
+     아파트 사용설명서 AI 전체화면 모달 (index.html)
+     ═══════════════════════════════════════════════════════════ -->
+<div id="aiModal" style="display:none;position:fixed;inset:0;z-index:300;background:#faf9f7;flex-direction:column;overflow:hidden">
+  <div style="background:#315927;padding:13px 16px;display:flex;align-items:center;gap:11px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.12)">
+    <div style="width:34px;height:34px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🏠</div>
+    <div style="flex:1;min-width:0">
+      <div style="color:#fff;font-size:15px;font-weight:700;letter-spacing:-.02em">아파트 사용설명서 AI</div>
+      <div style="color:rgba(255,255,255,.72);font-size:11px;margin-top:1px">by 한빛철물마트 잠실점 · 항목 클릭 시 상세 설명</div>
+    </div>
+    <button onclick="closeAIModal()" style="background:rgba(255,255,255,.15);border:none;color:#fff;width:34px;height:34px;border-radius:8px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0" aria-label="닫기">✕</button>
+  </div>
+  <div id="aiChipsWrap" style="border-bottom:1px solid #e8e4dc;background:#f4f1ea;flex-shrink:0;position:relative">
+    <div id="aiChips" style="display:flex;gap:5px;padding:9px 13px 4px 13px;flex-wrap:wrap;overflow:hidden;max-height:64px;transition:max-height .25s ease"></div>
+    <button id="aiChipsToggle" onclick="aiToggleChips()" style="display:none;width:100%;background:none;border:none;border-top:1px solid #ece8e0;padding:4px 0;font-size:11px;color:#888;cursor:pointer;font-family:inherit;text-align:center">더 보기 ▾</button>
+  </div>
+  <div id="aiMsgs" style="flex:1;overflow-y:auto;padding:14px 13px;display:flex;flex-direction:column;gap:11px;-webkit-overflow-scrolling:touch"></div>
+  <div style="display:flex;gap:8px;padding:10px 13px calc(10px + env(safe-area-inset-bottom,0px)) 13px;border-top:1px solid #e8e4dc;background:#fff;flex-shrink:0">
+    <input id="aiInp" placeholder="어떤 증상인지 말씀해 주세요..."
+      style="flex:1;border:1.5px solid #d0ccc4;border-radius:11px;padding:10px 13px;font-size:14px;font-family:inherit;outline:none;background:#faf9f7;color:#2d2821;transition:border-color .15s"
+      onfocus="this.style.borderColor='#315927'" onblur="this.style.borderColor='#d0ccc4'"
+      onkeydown="if(event.key==='Enter')aiSend()">
+    <button onclick="aiSend()" style="background:#315927;color:#fff;border:none;border-radius:11px;padding:10px 17px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:700;flex-shrink:0">전송</button>
+  </div>
+</div>
+
+<style>
+.ai-step{margin:5px 0;border:1px solid #e8e4dc;border-radius:10px;overflow:hidden;background:#fff}
+.ai-step-head{display:flex;align-items:center;gap:9px;padding:11px 14px;cursor:pointer;user-select:none;transition:background .12s}
+.ai-step-head:hover{background:#f4f1ea}
+.ai-step-num{width:22px;height:22px;border-radius:50%;background:#315927;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700}
+.ai-step-title{flex:1;font-size:13.5px;font-weight:500;color:#2d2821;line-height:1.4}
+.ai-step-arr{font-size:11px;color:#aaa;flex-shrink:0}
+.ai-step-body{display:none;padding:10px 14px 13px 45px;border-top:1px solid #f0ede8;font-size:13px;line-height:1.8;color:#555;background:#fdfcfa}
+.ai-step-body ul{margin:5px 0 5px 14px}
+.ai-step-body ul li{margin-bottom:4px}
+.ai-tip-box{margin-top:8px;padding:7px 10px;background:#f1f8e9;border-left:3px solid #66bb6a;border-radius:0 7px 7px 0;font-size:12px;color:#2e7d32}
+.ai-warn-box{margin-top:8px;padding:7px 10px;background:#fff8e1;border-left:3px solid #ffa726;border-radius:0 7px 7px 0;font-size:12px;color:#e65100}
+.ai-tag-diy{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:10px;background:#e8f5e8;color:#1b5e20;font-weight:700;margin-right:5px}
+.ai-tag-as{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:10px;background:#e3f2fd;color:#0d47a1;font-weight:700;margin-right:5px}
+.ai-tag-pro{display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:10px;background:#fff3e0;color:#e65100;font-weight:700;margin-right:5px}
+.ai-consult-btn{display:inline-flex;align-items:center;gap:6px;background:#315927;color:#fff;border:none;padding:10px 16px;border-radius:10px;font-size:13.5px;cursor:pointer;font-family:inherit;font-weight:700;text-decoration:none;margin-top:11px}
+.ai-sms-note{margin-top:10px;padding:10px 13px;background:#f1f8e9;border-radius:10px;font-size:13px;color:#2e7d32}
+</style>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   아파트 사용설명서 AI — index.html
+   ══════════════════════════════════════════════════════ */
+const AI_KB=[
+  {keys:['주방수전','싱크대 수전','주방 누수','싱크헤드','싱크호스'],title:'주방수전 누수 / 작동 불량',intro:'주방수전은 상담이 가장 많은 항목입니다. 싱크대 아래를 들여다보는 것이 첫 번째입니다.',steps:[
+    {t:'diy',h:'싱크대 아래에서 물이 새요',b:'<ul><li><b>고압호스 연결부 느슨</b> → 스패너로 조이기</li><li><b>호스 파손</b> → 동일 규격 교체</li><li><b>본체 누수</b> → 제조사 AS</li></ul><div class="ai-tip-box">💡 손전등으로 아래를 비춰 누수 위치를 찾으세요</div>'},
+    {t:'as',h:'온수가 안 나오거나 레버가 뻑뻑해요',b:'<ul><li>카트리지 마모 → 제조사 고객센터 AS</li><li>대림바스(1588-4848), 이누스, 한샘</li></ul>'},
+    {t:'pro',h:'수전 전체 교체를 원해요',b:'<ul><li>홀 개수(1홀/2홀) 확인 필요</li><li>직접 구매한 수전 설치만 의뢰도 가능</li></ul>'}
+  ]},
+  {keys:['세면수전','세면 누수','세면대 물이 안','고압호스','에어레이터'],title:'세면수전 누수 / 물 안 나옴',intro:'고압호스 연결부 이완이 가장 흔한 원인입니다.',steps:[
+    {t:'diy',h:'수전 아래에서 물이 새요',b:'<ul><li>고압호스 연결부 → 스패너로 조이기</li><li>호스 파손 → 동일 규격 교체</li></ul><div class="ai-tip-box">💡 고압호스는 마트에서 바로 구매 가능해요</div>'},
+    {t:'diy',h:'수압이 갑자기 약해졌어요',b:'<ul><li>에어레이터(거름망) 분리 → 식초물 30분 청소</li><li>수도 밸브가 잠겨 있는지 확인</li></ul>'},
+    {t:'pro',h:'청소 후에도 계속 새요',b:'<ul><li>카트리지 교체 또는 수전 전체 교체</li></ul>'}
+  ]},
+  {keys:['방등','거실등','형광등','LED 안 켜','불이 안 켜','안정기'],title:'방등 / 거실등 점등 불량',intro:'① 램프 수명 ② 안정기 ③ 스위치·배선 순으로 확인하세요.',steps:[
+    {t:'diy',h:'램프부터 교체해보세요',b:'<ul><li>T5/T8 규격 형광등 교체 (양 끝 까맣게 변색 = 수명 종료)</li><li>교체 후에도 안 켜지면 → 안정기 문제</li></ul>'},
+    {t:'diy',h:'안정기 교체',b:'<ul><li>차단기 내리고 동일 규격으로 교체</li></ul><div class="ai-warn-box">⚠️ 전기 작업 익숙하지 않으면 전문가에게 맡기세요</div>'},
+    {t:'pro',h:'교체 후에도 안 켜져요',b:'<ul><li>스위치 교체 또는 배선 점검</li></ul>'}
+  ]},
+  {keys:['샤워수전','샤워기','샤워 물','샤워 누수','해바라기'],title:'샤워수전 누수 / 작동 불량',intro:'헤드 막힘, 온도 불량, 부품 파손 세 가지 유형입니다.',steps:[
+    {t:'diy',h:'헤드에서 물이 새거나 수압이 약해요',b:'<ul><li>샤워헤드 분리 → 식초물 30분 → 구멍 뚫기</li><li>호스 삭음 → 새 호스 교체</li></ul>'},
+    {t:'as',h:'본체 누수·핸들 파손',b:'<ul><li>대림바스(1588-4848) 등 제조사 AS</li></ul>'},
+    {t:'pro',h:'수전 전체 교체',b:'<ul><li>해바라기·슬라이드바 방식으로 변경 가능</li></ul>'}
+  ]},
+  {keys:['싱크대 막','싱크대 배수','하수구 역류','싱크대 냄새','관통'],title:'싱크대 배수 막힘 / 악취',intro:'음식 찌꺼기와 기름때 축적이 주 원인입니다.',steps:[
+    {t:'diy',h:'배수가 느리거나 막혔어요',b:'<ul><li>거름망 분리 → 이물질 제거</li><li>U자 트랩 청소</li><li>끓는 물 붓기</li></ul><div class="ai-tip-box">💡 주 1회 끓는 물이 막힘 예방에 효과적입니다</div>'},
+    {t:'pro',h:'역류하거나 완전히 막혔어요',b:'<ul><li>전동 스프링 관통 작업 필요</li></ul><div class="ai-warn-box">⚠️ 역류 반복 시 아랫집 누수로 이어질 수 있어요</div>'}
+  ]},
+  {keys:['환풍기','환풍 소음','담배 냄새','댐퍼','덜덜'],title:'화장실 환풍기 소음 / 고장',intro:'소음의 70%는 먼지가 원인입니다.',steps:[
+    {t:'diy',h:'소음이 심해요 — 청소부터',b:'<ul><li>그릴 분리 → 팬 날개 먼지 제거</li></ul><div class="ai-tip-box">💡 청소만으로 소음이 절반 이하로 줄어드는 경우가 많아요</div>'},
+    {t:'pro',h:'이웃집 담배 냄새가 역류해요',b:'<ul><li>전동댐퍼 추가 설치 필요</li></ul><div class="ai-warn-box">⚠️ 단순 환풍기 교체만으로는 냄새 역류가 해결되지 않습니다</div>'}
+  ]},
+  {keys:['변기','물이 계속','물이 안 멈','졸졸','물통','물이 안 내려'],title:'변기 물통부속 / 막힘',intro:'졸졸 소리가 나면 물통 뚜껑을 열어보세요.',steps:[
+    {t:'diy',h:'물이 멈추지 않아요',b:'<ul><li>플래퍼(바닥 고무마개) → 교체 (가장 흔한 원인)</li><li>플로트볼 높이 조정</li></ul><div class="ai-tip-box">💡 물통 부속 교체는 유튜브 보며 직접 가능해요</div>'},
+    {t:'diy',h:'물이 안 내려가요',b:'<ul><li>뚫어뻥 5~10회</li></ul><div class="ai-warn-box">⚠️ 안 되면 전문가 스프링 관통 작업 필요</div>'},
+    {t:'pro',h:'변기 바닥에서 물이 새요',b:'<ul><li>가스켓 교체 또는 변기 전체 교체</li></ul>'}
+  ]},
+  {keys:['손잡이','문손잡이','문고리','경첩','삐걱'],title:'방문 손잡이 / 경첩',intro:'규격만 맞으면 직접 교체할 수 있습니다.',steps:[
+    {t:'diy',h:'손잡이가 헛돌거나 안 열려요',b:'<ul><li>커버 분리 → 나사 풀기 → 래치볼트 규격 확인 후 교체</li></ul><div class="ai-tip-box">💡 드라이버 하나로 30분이면 됩니다</div>'},
+    {t:'diy',h:'경첩이 삐걱거려요',b:'<ul><li>WD-40 또는 식용유 도포</li></ul>'},
+    {t:'pro',h:'문틀이 뒤틀렸어요',b:'<ul><li>대패 가공 또는 문짝 교체 필요</li></ul>'}
+  ]},
+  {keys:['세면대 막','세면대 배수','폽업','배수 느려','세면대 냄새'],title:'세면대 배수 불량',intro:'폽업 마개 안 머리카락 제거가 대부분 해결합니다.',steps:[
+    {t:'diy',h:'물이 느리거나 막혔어요',b:'<ul><li>폽업 마개 당겨 분리 → 머리카락 제거</li><li>베이킹소다 → 식초 → 뜨거운 물</li></ul>'},
+    {t:'pro',h:'뚫어뻥으로도 안 돼요',b:'<ul><li>하수구 관통 또는 폽업트랩 교체</li></ul>'}
+  ]},
+  {keys:['센서등','현관 불','센서 안','꺼지지 않'],title:'현관 센서등 불량',intro:'안 켜짐 vs 꺼지지 않음 두 가지 증상입니다.',steps:[
+    {t:'diy',h:'센서등이 안 켜져요',b:'<ul><li>손으로 가려 어둡게 하고 움직여보기</li><li>동일 규격 램프 교체</li></ul>'},
+    {t:'diy',h:'꺼지지 않아요',b:'<ul><li>센서 표면 먼지 청소</li><li>에어컨 바람 방향 확인 후 각도 조정</li></ul>'}
+  ]},
+  {keys:['스위치','전등 스위치','눌러도 안','콘센트'],title:'전등 스위치 / 콘센트',intro:'딸깍 소리가 없으면 스위치 자체 고장입니다.',steps:[
+    {t:'diy',h:'스위치가 작동 안 해요',b:'<ul><li>차단기 내리고 동일 규격 교체</li></ul><div class="ai-warn-box">⚠️ 차단기 내리지 않으면 감전 위험</div>'},
+    {t:'pro',h:'교체 후에도 안 되거나 여러 곳 동시 불량',b:'<ul><li>배선 점검 필요. 누전 의심 시 즉시 차단기 내리세요</li></ul>'}
+  ]},
+  {keys:['렌지후드','후드','흡입력','후드 소음'],title:'렌지후드 소음 / 고장',intro:'그릴망 기름때 청소만으로 흡입력이 크게 개선됩니다.',steps:[
+    {t:'diy',h:'흡입력 약하거나 소음 심해요',b:'<ul><li>그릴망 분리 → 중성세제로 기름때 세척</li></ul><div class="ai-tip-box">💡 한 달에 한 번 세척 권장</div>'},
+    {t:'as',h:'작동이 완전히 안 돼요',b:'<ul><li>제조사 AS 문의</li></ul>'}
+  ]},
+  {keys:['도어락','번호가 안','지문인식','카드키','먹통'],title:'디지털도어락 고장',intro:'절반 이상이 배터리 방전입니다.',steps:[
+    {t:'diy',h:'가장 먼저 — 배터리 교체',b:'<ul><li>AA 알카라인 건전지 교체</li><li>비상 시 외부 단자에 9V 배터리</li></ul><div class="ai-tip-box">💡 "삐삐삐" = 즉시 교체 신호</div>'},
+    {t:'as',h:'배터리 교체 후에도 오작동',b:'<ul><li>삼성·게이트맨·아이레보 고객센터 AS</li></ul>'},
+    {t:'pro',h:'교체를 원해요',b:'<ul><li>문 두께·뒷판 규격 확인 후 설치</li></ul>'}
+  ]},
+  {keys:['욕실등','화장실 등','욕실 불'],title:'욕실등 점등 불량',intro:'욕실은 반드시 방습형 제품을 사용해야 합니다.',steps:[
+    {t:'diy',h:'램프 교체',b:'<ul><li>방습형(IP44 이상) 동일 규격 램프 교체</li></ul><div class="ai-warn-box">⚠️ 일반 램프 사용 금지 — 습기로 금방 고장</div>'},
+    {t:'pro',h:'교체 후에도 안 켜지거나 등기구 교체',b:'<ul><li>방습형 등기구 전체 교체</li></ul>'}
+  ]},
+  {keys:['세면대 누수','세면대에서 물이 새'],title:'세면대 누수',intro:'아래 수납장에서 어느 위치가 새는지 먼저 확인하세요.',steps:[
+    {t:'diy',h:'수납장에서 물이 새요',b:'<ul><li>고압호스 연결부 → 스패너로 조이기</li><li>폽업트랩 연결부 → 나사 조임·패킹 교체</li></ul>'},
+    {t:'pro',h:'조임 후에도 계속 새요',b:'<ul><li>카트리지 교체 또는 수전 전체 교체</li></ul>'}
+  ]}
+];
+
+const AI_TEL='010-8955-9640';
+let _aisc2=0;
+function aiFindAns2(q){q=q.toLowerCase();for(const k of AI_KB)if(k.keys.some(w=>q.includes(w)))return k;return null;}
+const AI_TAGS2={diy:'<span class="ai-tag-diy">✅ 직접 가능</span>',as:'<span class="ai-tag-as">📞 제조사 AS</span>',pro:'<span class="ai-tag-pro">🔧 전문가</span>'};
+
+function aiRenderAns2(ans){
+  let h=`<div style="background:#fff;border:1px solid #e8e4dc;border-radius:14px;padding:15px 16px;font-size:14px;line-height:1.6;max-width:700px">`;
+  h+=`<strong style="font-size:15.5px">${ans.title}</strong><br><span style="font-size:12.5px;color:#888;display:block;margin-top:3px;margin-bottom:10px">${ans.intro}</span>`;
+  h+=`<div style="font-size:11.5px;color:#bbb;margin-bottom:6px">▼ 항목을 클릭하면 자세한 설명이 펼쳐집니다</div>`;
+  for(let i=0;i<ans.steps.length;i++){
+    const s=ans.steps[i],id='ais2'+(++_aisc2);
+    h+=`<div class="ai-step"><div class="ai-step-head" onclick="aiTog2('${id}')"><div class="ai-step-num">${i+1}</div><div class="ai-step-title">${AI_TAGS2[s.t]} ${s.h}</div><span class="ai-step-arr" id="aiarr2_${id}">▶</span></div><div class="ai-step-body" id="${id}">${s.b}</div></div>`;
+  }
+  const mob=/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+  if(mob){
+    const sms=encodeURIComponent(`[아파트 사용설명서] ${ans.title} 관련 문의드립니다.`);
+    h+=`<a href="sms:${AI_TEL}?body=${sms}" class="ai-consult-btn">📱 문자 상담 연결 →</a>`;
+  }else{
+    h+=`<div class="ai-sms-note">📞 <a href="tel:${AI_TEL}" style="color:#315927;font-weight:700">${AI_TEL}</a> &nbsp;|&nbsp; 모바일에서 사진과 함께 문자 상담을 이용해보세요</div>`;
+  }
+  h+=`</div>`;return h;
+}
+
+window.aiTog2=function(id){
+  const b=document.getElementById(id),a=document.getElementById('aiarr2_'+id);
+  if(!b)return;const open=b.style.display!=='none';
+  b.style.display=open?'none':'block';a.textContent=open?'▶':'▼';
+};
+
+function aiAddMsg2(html,who){
+  const d=document.createElement('div');
+  if(who==='user'){d.style.cssText='align-self:flex-end;background:#315927;color:#fff;padding:11px 15px;border-radius:15px 15px 4px 15px;max-width:80%;font-size:14px;line-height:1.5;word-break:keep-all';}
+  else{d.style.cssText='align-self:flex-start;width:100%';}
+  d.innerHTML=html;
+  const m=document.getElementById('aiMsgs');
+  m.appendChild(d);setTimeout(()=>m.scrollTop=m.scrollHeight,50);
+}
+
+function aiSend(){
+  const inp=document.getElementById('aiInp');
+  const q=inp.value.trim();if(!q)return;inp.value='';
+  aiAddMsg2(q,'user');
+  setTimeout(()=>{
+    const ans=aiFindAns2(q);
+    if(ans){aiAddMsg2(aiRenderAns2(ans),'bot');}
+    else{
+      const mob=/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+      const sms=encodeURIComponent('[아파트 사용설명서] 집수리 문의드립니다.');
+      let fb=`<div style="background:#fff;border:1px solid #e8e4dc;border-radius:14px;padding:15px 16px;font-size:14px">"<strong>${q}</strong>"에 해당하는 항목을 찾지 못했어요.<br><br><span style="font-size:13px;color:#888">예) "주방수전 물이 새요" / "변기 물이 안 멈춰요"</span><br>`;
+      if(mob)fb+=`<a href="sms:${AI_TEL}?body=${sms}" class="ai-consult-btn">📱 직접 문자 상담 →</a>`;
+      else fb+=`<div class="ai-sms-note">📞 <a href="tel:${AI_TEL}" style="color:#315927;font-weight:700">${AI_TEL}</a> 로 전화해 주세요</div>`;
+      fb+=`</div>`;aiAddMsg2(fb,'bot');
+    }
+  },300);
+}
+
+const AI_CHIPS=[
+  ['💧 주방수전','주방수전 물이 새요'],['🚿 세면수전','세면수전 물이 새요'],
+  ['💡 방등','방등이 안 켜져요'],['🚿 샤워수전','샤워수전 물이 새요'],
+  ['🌀 싱크대 배수','싱크대 배수가 막혔어요'],['💨 환풍기','환풍기 소음이 심해요'],
+  ['🚽 변기','변기 물이 안 멈춰요'],['🚪 방문 손잡이','방문 손잡이가 안 열려요'],
+  ['🌀 세면대 배수','세면대 배수가 느려요'],['🔦 센서등','현관 센서등이 안 켜져요'],
+  ['🔌 전등 스위치','전등 스위치가 안 돼요'],['🍳 렌지후드','렌지후드 소음이 심해요'],
+  ['🔐 도어락','도어락이 안 잠겨요'],['💡 욕실등','욕실등이 안 켜져요'],
+  ['💦 세면대 누수','세면대 누수가 있어요'],
+];
+const AI_CHIPS_COLLAPSED_H=64;
+let _aiChipsExpanded=false;
+
+function aiToggleChips(){
+  _aiChipsExpanded=!_aiChipsExpanded;
+  const chips=document.getElementById('aiChips'),btn=document.getElementById('aiChipsToggle');
+  if(!chips)return;
+  chips.style.maxHeight=_aiChipsExpanded?chips.scrollHeight+'px':AI_CHIPS_COLLAPSED_H+'px';
+  if(btn)btn.textContent=_aiChipsExpanded?'접기 ▴':'더 보기 ▾';
+}
+function aiCollapseChipsArea(){
+  const chips=document.getElementById('aiChips'),btn=document.getElementById('aiChipsToggle');
+  if(chips){chips.style.maxHeight='28px';chips.style.overflow='hidden';}
+  if(btn){btn.textContent='증상 더 보기 ▾';btn.style.display='block';}
+  _aiChipsExpanded=false;
+}
+function aiAsk(q){
+  const inp=document.getElementById('aiInp');
+  if(inp)inp.value=q;
+  aiCollapseChipsArea();aiSend();
+}
+
+let _aiInited2=false;
+function aiInitOnce(){
+  if(_aiInited2)return;_aiInited2=true;
+  const chips=document.getElementById('aiChips'),toggleBtn=document.getElementById('aiChipsToggle');
+  if(chips){
+    chips.innerHTML=AI_CHIPS.map(([label,q])=>
+      `<button onclick="aiAsk('${q}')" style="padding:5px 11px;border-radius:20px;border:1px solid #d5d0c8;font-size:12px;cursor:pointer;background:#fff;color:#5a5349;white-space:nowrap;font-family:inherit;transition:all .12s;flex-shrink:0" onmouseover="this.style.background='#e8f5e8';this.style.borderColor='#315927';this.style.color='#315927'" onmouseout="this.style.background='#fff';this.style.borderColor='#d5d0c8';this.style.color='#5a5349'">${label}</button>`
+    ).join('');
+    setTimeout(()=>{if(chips.scrollHeight>AI_CHIPS_COLLAPSED_H+4&&toggleBtn)toggleBtn.style.display='block';},50);
+  }
+  aiAddMsg2(`<div style="background:#fff;border:1px solid #e8e4dc;border-radius:14px;padding:15px 16px;font-size:14px;line-height:1.65">안녕하세요! 집수리 증상을 알려주시면 직접 해결 방법부터 전문가가 필요한 경우까지 <b>단계별로</b> 안내해 드려요.<br><br><span style="font-size:13px;color:#888">💡 위 버튼을 누르거나 증상을 직접 입력해보세요</span></div>`,'bot');
+}
+
+function openAIModal(){
+  const m=document.getElementById('aiModal');
+  m.style.display='flex';document.body.style.overflow='hidden';
+  aiInitOnce();setTimeout(()=>document.getElementById('aiInp').focus(),150);
+}
+function closeAIModal(){
+  document.getElementById('aiModal').style.display='none';document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('aiModal').style.display==='flex')closeAIModal();});
+</script>
 </body>
 </html>
