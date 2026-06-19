@@ -959,18 +959,21 @@ function caseSkelWrap(){
 
 /* 단일 카드 HTML 생성 (thumb 없으면 그라데이션 배경) */
 function caseCard(p, i, thumb){
-  const imgHtml = thumb
-    ? '<div class="img thumb" style="background-image:url(''+thumb+'')"><span class="tag">시공사례</span><span class="ext">'+IC.ext+'</span></div>'
-    : '<div class="img c'+(i%4)+'"><span class="tag">시공 전·후 사진</span><span class="ext">'+IC.ext+'</span><div class="ph">'+IC.cam+'<span>실제 시공 사진</span></div></div>';
+  const dest = p.url || ('https://blog.naver.com/' + BLOG_ID);
   const src  = p.url ? '네이버 블로그 글 보기' : '블로그 글 준비 중';
-  const dest = p.url || ('https://blog.naver.com/'+BLOG_ID);
-  return '<div class="case" onclick="openLv(''+dest+'','네이버 블로그')">'
-    +imgHtml
-    +'<div class="bd">'
-    +'<div class="src"><span class="d">N</span>'+src+'</div>'
-    +'<h4>'+p.title+'</h4>'
-    +'<div class="meta">📍 '+p.apt+' · 한빛철물마트 잠실점 시공</div>'
-    +'</div></div>';
+  let imgHtml;
+  if(thumb){
+    imgHtml = '<div class="img thumb" style="background-image:url(' + JSON.stringify(thumb) + ')"><span class="tag">시공사례</span><span class="ext">' + IC.ext + '</span></div>';
+  } else {
+    imgHtml = '<div class="img c' + (i%4) + '"><span class="tag">시공 전·후 사진</span><span class="ext">' + IC.ext + '</span><div class="ph">' + IC.cam + '<span>실제 시공 사진</span></div></div>';
+  }
+  return '<div class="case" onclick="openLv(\'' + dest.replace(/'/g,"\\'") + '\',\'네이버 블로그\')">'
+    + imgHtml
+    + '<div class="bd">'
+    + '<div class="src"><span class="d">N</span>' + src + '</div>'
+    + '<h4>' + p.title + '</h4>'
+    + '<div class="meta">📍 ' + p.apt + ' · 한빛철물마트 잠실점 시공</div>'
+    + '</div></div>';
 }
 
 /* 네이버 블로그 포스트의 og:image를 CORS 프록시 없이 가져오는 함수.
