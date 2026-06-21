@@ -976,20 +976,48 @@ function caseCard(p, i, thumb){
     + '</div></div>';
 }
 
-/* 네이버 블로그 포스트의 og:image를 CORS 프록시 없이 가져오는 함수.
-   네이버 블로그 모바일 URL(m.blog.naver.com)은 og:image가 HTML에 포함됨.
-   Cloudflare Worker /api/ogimage?url=... 를 이용해 서버사이드로 추출. */
+/* 네이버 블로그 포스트 썸네일 추출
+   전략 1: /api/ogimage Cloudflare Worker (배포된 경우)
+   전략 2: 네이버 블로그 RSS에서 <img> 태그 파싱 (CORS 허용)
+   전략 3: 실패 시 null → 그라데이션 배경 표시 */
 async function fetchOgImage(postUrl){
   if(!postUrl) return null;
+
+  /* 전략 1: Worker */
   try{
-    // 네이버 블로그 URL을 모바일 형식으로 변환
-    // https://blog.naver.com/mac6765/12345 → https://m.blog.naver.com/mac6765/12345
-    const mUrl = postUrl.replace('https://blog.naver.com/','https://m.blog.naver.com/');
-    const proxyUrl = '/api/ogimage?url=' + encodeURIComponent(mUrl);
-    const res = await fetch(proxyUrl, {signal: AbortSignal.timeout(4000)});
+    const proxyUrl = '/api/ogimage?url=' + encodeURIComponent(
+      postUrl.replace('https://blog.naver.com/','https://m.blog.naver.com/')
+    );
+    const res = await fetch(proxyUrl, {signal: AbortSignal.timeout(3000)});
+    if(res.ok){
+      const data = await res.json();
+      if(data.image) return data.image;
+    }
+  } catch(e){}
+
+  /* 전략 2: 포스트 ID 추출 → 네이버 블로그 PostView API
+     https://blog.naver.com/PostView.naver?blogId=X&logNo=Y&isHttpsRedirect=true
+     → RSS: https://rss.blog.naver.com/{blogId}.xml?commentCountPerPage=0&page=1
+     단순히 포스트 번호로 오픈그래프 이미지 URL 패턴 구성 시도 */
+  try{
+    const m = postUrl.match(/blog\.naver\.com\/([^\/]+)\/(\d+)/);
+    if(!m) return null;
+    const [, blogId, logNo] = m;
+    /* 네이버 블로그 PostView API — JSONP 우회 불가, RSS 파싱 시도 */
+    const rssUrl = `https://rss.blog.naver.com/${blogId}.xml`;
+    const res = await fetch(rssUrl, {signal: AbortSignal.timeout(4000)});
     if(!res.ok) return null;
-    const data = await res.json();
-    return data.image || null;
+    const xml = await res.text();
+    /* RSS item 중 logNo가 포함된 link 찾기 */
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xml, 'text/xml');
+    const items = [...doc.querySelectorAll('item')];
+    const target = items.find(it => (it.querySelector('link')?.textContent||'').includes(logNo));
+    if(!target) return null;
+    /* description에서 첫 번째 img src 추출 */
+    const desc = target.querySelector('description')?.textContent || '';
+    const imgMatch = desc.match(/<img[^>]+src=["']([^"']+)["']/i);
+    return imgMatch ? imgMatch[1] : null;
   } catch(e){
     return null;
   }
@@ -1078,6 +1106,9 @@ updateMeta();
       <div style="color:#fff;font-size:15px;font-weight:700;letter-spacing:-.02em">아파트 사용설명서 AI</div>
       <div style="color:rgba(255,255,255,.72);font-size:11px;margin-top:1px">by 한빛철물마트 잠실점 · 항목 클릭 시 상세 설명</div>
     </div>
+    <button onclick="aiReset()" title="대화 초기화" style="background:rgba(255,255,255,.15);border:none;color:#fff;width:34px;height:34px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0" aria-label="초기화">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="16" height="16"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+    </button>
     <button onclick="closeAIModal()" style="background:rgba(255,255,255,.15);border:none;color:#fff;width:34px;height:34px;border-radius:8px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0" aria-label="닫기">✕</button>
   </div>
 
@@ -1256,93 +1287,141 @@ const AI_KB=[
 const AI_TEL='010-8955-9640';
 let _aisc=0;
 
-function aiFindAns(q){
-  q=q.toLowerCase();
-  for(const k of AI_KB) if(k.keys.some(w=>q.includes(w))) return k;
-  return null;
+/* ── Claude API 대화 엔진 ── */
+const AI_CHAT_ENDPOINT = '/api/chat'; // Cloudflare Worker
+let aiHistory = []; // 대화 히스토리 [{role, content}]
+
+/* 마크다운 → HTML 변환 */
+function aiMarkdown(text){
+  let s = text
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+  // 굵게: **text**
+  s = s.replace(/[*][*]([^*]+)[*][*]/g,'<strong>$1</strong>');
+  // 목록: - item 또는 • item
+  s = s.replace(/(^|\n)[-\u2022] ([^\n]+)/g,'$1<li>$2</li>');
+  s = s.replace(/(<li>[^<]*<\/li>)/g,'<ul style="margin:6px 0 6px 16px;padding:0">$1</ul>');
+  // 줄바꿈
+  s = s.replace(/\n\n/g,'</p><p style="margin:6px 0 0">');
+  s = s.replace(/\n/g,'<br>');
+  return s;
 }
 
-const AI_TAGS={
-  diy:'<span class="ai-tag-diy">✅ 직접 가능</span>',
-  as: '<span class="ai-tag-as">📞 제조사 AS</span>',
-  pro:'<span class="ai-tag-pro">🔧 전문가</span>'
-};
-
-function aiRenderAns(ans){
-  let h=`<div style="background:#fff;border:1px solid #e8e4dc;border-radius:14px;padding:15px 16px;font-size:14px;line-height:1.6;max-width:700px">`;
-  h+=`<strong style="font-size:15.5px;letter-spacing:-.02em">${ans.title}</strong><br>`;
-  h+=`<span style="font-size:12.5px;color:#888;display:block;margin-top:3px;margin-bottom:10px">${ans.intro}</span>`;
-  h+=`<div style="font-size:11.5px;color:#bbb;margin-bottom:6px">▼ 항목을 클릭하면 자세한 설명이 펼쳐집니다</div>`;
-  for(let i=0;i<ans.steps.length;i++){
-    const s=ans.steps[i], id='ais'+(++_aisc);
-    h+=`<div class="ai-step">
-      <div class="ai-step-head" onclick="aiTog('${id}')">
-        <div class="ai-step-num">${i+1}</div>
-        <div class="ai-step-title">${AI_TAGS[s.t]} ${s.h}</div>
-        <span class="ai-step-arr" id="aiarr_${id}">▶</span>
-      </div>
-      <div class="ai-step-body" id="${id}">${s.b}</div>
-    </div>`;
-  }
-  /* 상담 버튼 */
+/* 문자/전화 상담 버튼 (답변 하단에 항상 표시) */
+function aiConsultBtn(topic=''){
   const mob=/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+  const smsBody=encodeURIComponent(`[아파트 사용설명서] ${topic||'집수리'} 관련 문의드립니다.`);
   if(mob){
-    const sms=encodeURIComponent(`[아파트 사용설명서] ${ans.title} 관련 문의드립니다.`);
-    h+=`<a href="sms:${AI_TEL}?body=${sms}" class="ai-consult-btn">📱 문자 상담 연결 →</a>`;
-  } else {
-    h+=`<div class="ai-sms-note">📞 전화 상담: <a href="tel:${AI_TEL}" style="color:#315927;font-weight:700">${AI_TEL}</a> &nbsp;|&nbsp; 모바일에서 사진과 함께 문자 상담을 이용해보세요</div>`;
+    return `<a href="sms:${AI_TEL}?body=${smsBody}" class="ai-consult-btn" style="margin-top:12px;display:inline-flex">📱 사진과 함께 문자 상담 →</a>`;
   }
-  h+=`</div>`;
-  return h;
+  return `<div class="ai-sms-note" style="margin-top:12px">📞 <a href="tel:${AI_TEL}" style="color:#315927;font-weight:700">${AI_TEL}</a> &nbsp;|&nbsp; 모바일에서 사진과 함께 문자 상담 가능해요</div>`;
 }
 
-window.aiTog=function(id){
-  const b=document.getElementById(id), a=document.getElementById('aiarr_'+id);
-  if(!b)return;
-  const open=b.style.display!=='none';
-  b.style.display=open?'none':'block';
-  a.textContent=open?'▶':'▼';
-};
-
-function aiAddMsg(html,who){
+/* 메시지 추가 */
+function aiAddMsg(html, who){
   const d=document.createElement('div');
   if(who==='user'){
     d.style.cssText='align-self:flex-end;background:#315927;color:#fff;padding:11px 15px;border-radius:15px 15px 4px 15px;max-width:80%;font-size:14px;line-height:1.5;word-break:keep-all';
+    d.textContent=html; // 사용자 입력은 텍스트로 (XSS 방지)
   } else {
-    d.style.cssText='align-self:flex-start;width:100%';
+    d.style.cssText='align-self:flex-start;max-width:92%;width:100%';
+    d.innerHTML=html;
   }
-  d.innerHTML=html;
   const m=document.getElementById('aiMsgs');
   m.appendChild(d);
   setTimeout(()=>m.scrollTop=m.scrollHeight,50);
+  return d;
 }
 
-function aiSend(){
+/* 로딩 인디케이터 */
+function aiShowLoading(){
+  const d=document.createElement('div');
+  d.id='aiLoading';
+  d.style.cssText='align-self:flex-start;display:flex;gap:4px;padding:14px 16px;background:#fff;border:1px solid #e8e4dc;border-radius:14px';
+  d.innerHTML='<span style="width:7px;height:7px;border-radius:50%;background:#ccc;animation:aiDot .9s ease-in-out infinite"></span>'
+    +'<span style="width:7px;height:7px;border-radius:50%;background:#ccc;animation:aiDot .9s ease-in-out .2s infinite"></span>'
+    +'<span style="width:7px;height:7px;border-radius:50%;background:#ccc;animation:aiDot .9s ease-in-out .4s infinite"></span>';
+  const m=document.getElementById('aiMsgs');
+  m.appendChild(d);
+  m.scrollTop=m.scrollHeight;
+  return d;
+}
+
+/* 전송 버튼 비활성화/활성화 */
+function aiSetSending(on){
+  const btn=document.querySelector('#aiModal button[onclick="aiSend()"]');
   const inp=document.getElementById('aiInp');
-  const q=inp.value.trim();
+  if(btn){ btn.disabled=on; btn.style.opacity=on?'.5':'1'; }
+  if(inp){ inp.disabled=on; }
+}
+
+/* 메인 전송 함수 */
+async function aiSend(){
+  const inp=document.getElementById('aiInp');
+  const q=(inp.value||'').trim();
   if(!q)return;
   inp.value='';
+
+  aiCollapseChipsArea(); // 칩 최소화
   aiAddMsg(q,'user');
-  setTimeout(()=>{
-    const ans=aiFindAns(q);
-    if(ans){
-      aiAddMsg(aiRenderAns(ans),'bot');
-    } else {
-      const mob=/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
-      const sms=encodeURIComponent('[아파트 사용설명서] 집수리 문의드립니다.');
-      let fb=`<div style="background:#fff;border:1px solid #e8e4dc;border-radius:14px;padding:15px 16px;font-size:14px">`;
-      fb+=`"<strong>${q}</strong>"에 해당하는 항목을 찾지 못했어요.<br><br>`;
-      fb+=`<span style="font-size:13px;color:#888">예) "주방수전 물이 새요" / "변기 물이 안 멈춰요"</span><br>`;
-      if(mob){
-        fb+=`<a href="sms:${AI_TEL}?body=${sms}" class="ai-consult-btn">📱 직접 문자 상담 →</a>`;
-      } else {
-        fb+=`<div class="ai-sms-note">📞 <a href="tel:${AI_TEL}" style="color:#315927;font-weight:700">${AI_TEL}</a> 로 전화해 주세요</div>`;
-      }
-      fb+=`</div>`;
-      aiAddMsg(fb,'bot');
+  aiHistory.push({role:'user', content:q});
+
+  aiSetSending(true);
+  const loading=aiShowLoading();
+
+  try{
+    const res=await fetch(AI_CHAT_ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:aiHistory}),
+      signal:AbortSignal.timeout(20000)
+    });
+
+    loading.remove();
+
+    if(!res.ok){
+      throw new Error('서버 오류 '+res.status);
     }
-  },300);
+
+    const data=await res.json();
+    const reply=data.reply||'죄송해요, 답변을 가져오지 못했어요.';
+
+    aiHistory.push({role:'assistant', content:reply});
+
+    /* 답변 렌더링 */
+    const html=`<div style="background:#fff;border:1px solid #e8e4dc;border-radius:4px 14px 14px 14px;padding:13px 15px;font-size:14px;line-height:1.75;color:#2d2821">
+      <p style="margin:0">${aiMarkdown(reply)}</p>
+      ${aiConsultBtn(q)}
+    </div>`;
+    aiAddMsg(html,'bot');
+
+  }catch(e){
+    loading.remove();
+    /* 네트워크 오류 or Worker 미배포 → 안내 메시지 */
+    const mob=/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+    const sms=encodeURIComponent('[아파트 사용설명서] 집수리 문의드립니다.');
+    let fb=`<div style="background:#fff8f0;border:1px solid #fde8cc;border-radius:4px 14px 14px 14px;padding:13px 15px;font-size:14px;color:#555">`;
+    fb+=`지금 AI 상담이 일시적으로 연결되지 않아요 😥<br><span style="font-size:13px;color:#999">잠시 후 다시 시도하시거나, 문자로 바로 연락 주세요!</span>`;
+    fb+=mob
+      ? `<br><a href="sms:${AI_TEL}?body=${sms}" class="ai-consult-btn" style="margin-top:10px;display:inline-flex">📱 문자 상담 →</a>`
+      : `<div class="ai-sms-note" style="margin-top:10px">📞 <a href="tel:${AI_TEL}" style="color:#315927;font-weight:700">${AI_TEL}</a></div>`;
+    fb+=`</div>`;
+    aiAddMsg(fb,'bot');
+    // 실패한 메시지는 히스토리에서 제거
+    aiHistory.pop();
+  }finally{
+    aiSetSending(false);
+    setTimeout(()=>document.getElementById('aiInp')?.focus(),100);
+  }
 }
+
+/* 로딩 점 애니메이션 CSS */
+(function(){
+  const st=document.createElement('style');
+  st.textContent='@keyframes aiDot{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}';
+  document.head.appendChild(st);
+})();
 
 /* ── 칩 버튼 & 초기화 ── */
 const AI_CHIPS=[
@@ -1418,6 +1497,27 @@ function openAIModal(){
 function closeAIModal(){
   document.getElementById('aiModal').style.display='none';
   document.body.style.overflow='';
+}
+function aiReset(){
+  /* 메시지 + 히스토리 초기화 */
+  const msgs = document.getElementById('aiMsgs');
+  if(msgs) msgs.innerHTML = '';
+  aiHistory = [];
+  _aisc = 0;
+  /* 칩 영역 복원 */
+  const chips = document.getElementById('aiChips');
+  const wrap  = document.getElementById('aiChipsWrap');
+  const btn   = document.getElementById('aiChipsToggle');
+  if(chips){ chips.style.maxHeight = AI_CHIPS_COLLAPSED_H + 'px'; chips.style.overflow = 'hidden'; }
+  if(btn && chips && chips.scrollHeight > AI_CHIPS_COLLAPSED_H + 4){
+    btn.textContent = '더 보기 ▾'; btn.style.display = 'block';
+  }
+  _aiChipsExpanded = false;
+  _aisc = 0;
+  /* 환영 메시지 다시 표시 */
+  aiAddMsg(`<div style="background:#fff;border:1px solid #e8e4dc;border-radius:14px;padding:15px 16px;font-size:14px;line-height:1.65">대화가 초기화됐어요. 집수리 증상을 다시 알려주세요!<br><br><span style="font-size:13px;color:#888">💡 위 버튼을 누르거나 증상을 직접 입력해보세요</span></div>`, 'bot');
+  /* 입력창 포커스 */
+  setTimeout(()=>{ const inp=document.getElementById('aiInp'); if(inp) inp.focus(); }, 100);
 }
 /* ESC 키로 닫기 */
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('aiModal').style.display==='flex')closeAIModal();});
